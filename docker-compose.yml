@@ -52,3 +52,4 @@ volumes:
   domjudge_config:
   domserver_config:
   domjudge_logs:
+
