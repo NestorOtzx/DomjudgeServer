@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   dj-mariadb:
-    image: mariadb
+    image: mariadb:${MARIADB_VERSION}
     container_name: dj-mariadb
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
 
   domserver:
-    image: domjudge/domserver:latest
+    image: domjudge/domserver:${DOMSERVER_VERSION}
     container_name: domserver
     depends_on:
       - dj-mariadb
@@ -36,7 +36,7 @@ services:
     restart: unless-stopped
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:${PHPMYADMIN_VERSION}
     container_name: phpmyadmin
     depends_on:
       - dj-mariadb
