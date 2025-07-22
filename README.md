@@ -4,8 +4,6 @@ These are a bunch of helper scripts to manage the DOMjudge setup quickly through
 
 ## Step-by-Step Instructions
 
-## Step-by-Step Instructions
-
 1. **Install Docker**  
    - Make sure Docker is installed before continuing.
 
