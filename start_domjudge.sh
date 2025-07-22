@@ -3,12 +3,12 @@
 set -e
 
 echo "Starting services with Docker Compose..."
-docker compose up -d > /dev/null 2>&1
+docker compose up -d
 
 echo "Waiting for domserver to be ready..."
 
-#Wait until domserver is responding
-until docker exec domserver curl -s http://localhost > /dev/null 2>&1; do
+# Wait until domserver is responding
+until docker exec domserver curl -s http://localhost >/dev/null 2>&1; do
   echo "Still waiting for domserver to respond at http://localhost..."
   sleep 3
 done
@@ -23,9 +23,9 @@ if [ -z "$JUDGEDAEMON_PASSWORD" ]; then
   exit 1
 fi
 
-echo "Password found."
+echo "Password found: $JUDGEDAEMON_PASSWORD"
 
-#Find Docker Compose default network dynamically (matches *_default)
+# Find Docker Compose default network dynamically (matches *_default)
 COMPOSE_NETWORK=$(docker network ls --format '{{.Name}}' | grep '_default$' | head -n 1)
 
 if [ -z "$COMPOSE_NETWORK" ]; then
@@ -35,13 +35,12 @@ fi
 
 echo "Using network: $COMPOSE_NETWORK"
 
-#Remove existing container if it exists
+# Remove existing container if it exists
 if docker ps -a --format '{{.Names}}' | grep -q "^judgehost-0$"; then
   echo "Removing existing judgehost-0 container..."
-  docker rm -f judgehost-0 > /dev/null 2>&1
+  docker rm -f judgehost-0
 fi
 
-#Run the judgehost in background
 echo "Starting judgehost-0 on network $COMPOSE_NETWORK..."
 docker run -d --privileged \
   --network "$COMPOSE_NETWORK" \
@@ -51,6 +50,6 @@ docker run -d --privileged \
   -e DAEMON_ID=0 \
   -e JUDGEDAEMON_USERNAME=judgehost \
   -e JUDGEDAEMON_PASSWORD="$JUDGEDAEMON_PASSWORD" \
-  domjudge/judgehost:latest > /dev/null 2>&1
+  domjudge/judgehost:latest
 
-echo "All containers started in background."
+echo "All containers started successfully."
