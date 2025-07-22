@@ -51,9 +51,11 @@ if [[ "$CONFIRM" != "yes" ]]; then
   exit 0
 fi
 
-echo "[restore-db] Restoring database from: $SELECTED_FILE..."
+#ensure the target database exists
+echo "[restore-db] Creating database '$DB_NAME' if it doesn't exist..."
+docker exec "$DB_CONTAINER" sh -c "exec mysql -u$DB_USER -p$DB_PASS -e 'CREATE DATABASE IF NOT EXISTS \`$DB_NAME\`;'" 
 
-#execute restore command inside the database container
+echo "[restore-db] Restoring database from: $SELECTED_FILE..."
 docker exec -i "$DB_CONTAINER" sh -c "exec mysql -u$DB_USER -p$DB_PASS $DB_NAME" < "$SELECTED_FILE"
 
 echo "[restore-db] Restore completed successfully."
