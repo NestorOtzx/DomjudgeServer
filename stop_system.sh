@@ -16,8 +16,9 @@ fi
 # Optionally remove the *_default Docker network
 COMPOSE_NETWORK=$(docker network ls --format '{{.Name}}' | grep '_default$' | head -n 1)
 if [ -n "$COMPOSE_NETWORK" ]; then
-  echo "Removing Docker Compose default network: $COMPOSE_NETWORK"
+  echo "!!!! Removing Docker Compose default network: $COMPOSE_NETWORK"
   docker network rm "$COMPOSE_NETWORK" >/dev/null || true
 fi
+
 
 echo "All DOMjudge containers and networks stopped and cleaned."
