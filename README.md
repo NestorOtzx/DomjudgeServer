@@ -1,0 +1,2 @@
+# DomjudgeServer
+Easy DomJudge deployment
