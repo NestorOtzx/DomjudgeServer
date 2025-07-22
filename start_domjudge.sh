@@ -25,8 +25,15 @@ fi
 
 echo "Password found: $JUDGEDAEMON_PASSWORD"
 
-#Use Docker Compose network (assuming it's domjudge_default)
-COMPOSE_NETWORK="domjudge_default"
+#Find Docker Compose default network dynamically (matches *_default)
+COMPOSE_NETWORK=$(docker network ls --format '{{.Name}}' | grep '_default$' | head -n 1)
+
+if [ -z "$COMPOSE_NETWORK" ]; then
+  echo "Could not find a Docker Compose network ending with '_default'."
+  exit 1
+fi
+
+echo "Using network: $COMPOSE_NETWORK"
 
 #Remove existing container if it exists
 if docker ps -a --format '{{.Names}}' | grep -q "^judgehost-0$"; then
