@@ -9,8 +9,8 @@ set +a
 
 DB_CONTAINER="dj-mariadb"
 DB_NAME="$MYSQL_DATABASE"
-DB_USER="$MYSQL_USER"
-DB_PASS="$MYSQL_PASSWORD"
+DB_USER="root"
+DB_PASS="$MYSQL_ROOT_PASSWORD"
 BACKUP_DIR="./backups"
 
 #check if backup directory exists
