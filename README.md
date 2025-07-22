@@ -2,6 +2,82 @@
 
 These are a bunch of helper scripts to manage the DOMjudge setup quickly through Docker. Most of them just make life easier when dealing with services, backups, or common restarts.
 
+## Step-by-Step Instructions
+
+## Step-by-Step Instructions
+
+1. **Install Docker**  
+   - Make sure Docker is installed before continuing.
+
+2. **Configure the Environment File**  
+   - Copy the provided template to create your `.env` file:  
+     ```bash
+     cp .env.template .env
+     ```  
+   - Edit the `.env` file with your preferred settings (ports, passwords, versions, etc.):  
+     ```bash
+     nano .env
+     ```
+
+3. **Run the System Startup Script**  
+   - Make the script executable:  
+     ```bash
+     chmod +x start_system.sh
+     ```  
+   - Run the script with sudo privileges:  
+     ```bash
+     sudo ./start_system.sh
+     ```
+
+4. **Wait for the Server to Boot Up**  
+   - Wait until the judgehost connects to the domserver.
+
+5. **Troubleshoot cgroup Memory Error**  
+   - If you encounter the error during boot-up:  
+     ```
+     Error: cgroup support missing memory features in running kernel. Unable to continue.
+     ```  
+     This indicates that the Linux kernel lacks required cgroup memory features, which are necessary for the judgehost or system to function.
+
+   - **Steps to Resolve**:  
+     1. Stop the system to prevent further issues:  
+        ```bash
+        sudo ./stop_system.sh
+        ```  
+        Ensure the `stop_system.sh` script is executable:  
+        ```bash
+        chmod +x stop_system.sh
+        ```  
+     2. Enable cgroup memory features:  
+        - Edit the GRUB configuration:  
+          ```bash
+          sudo nano /etc/default/grub
+          ```  
+        - Find the line starting with `GRUB_CMDLINE_LINUX_DEFAULT` and append:  
+          ```
+          cgroup_enable=memory cgroup_memory=1
+          ```  
+          Example:  
+          ```
+          GRUB_CMDLINE_LINUX_DEFAULT="quiet splash cgroup_enable=memory cgroup_memory=1"
+          ```  
+        - Save the file and update GRUB:  
+          ```bash
+          sudo update-grub
+          ```  
+        - Reboot your system:  
+          ```bash
+          sudo reboot
+          ```  
+     3. Start the system again:  
+        ```bash
+        sudo ./start_system.sh
+        ```
+
+6. **Verify System Operation**  
+   - Once the server starts without errors, open [http://localhost:12345/](http://localhost:12345/) in your browser.  
+   - You should see the DOMjudge interface and be able to use the system normally.
+
 ## Accessing the Database via phpMyAdmin
 
 Once the system is running you can manage the DOMjudge database visually using **phpMyAdmin**, which is exposed on port `8080` by default (see `.env.template` file).
@@ -22,7 +98,7 @@ To access it:
 ## Scripts Overview
 
 ### `start_system.sh`
-Starts all the containers: DB, DOMserver, judgehost, and phpMyAdmin. Use this when booting everything up.
+Starts all the containers: DB, DOMserver, judgehost, and phpMyAdmin. Use this to boot everything up.
 
 ---
 
