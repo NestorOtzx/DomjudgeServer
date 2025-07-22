@@ -35,6 +35,13 @@ fi
 
 echo "Using network: $COMPOSE_NETWORK"
 
+# Detect domserver image version/tag
+DOMSERVER_IMAGE=$(docker inspect domserver --format='{{.Config.Image}}')
+JUDGEHOST_IMAGE=${DOMSERVER_IMAGE/domserver/judgehost}
+
+echo "Detected DOMserver image: $DOMSERVER_IMAGE"
+echo "Using judgehost image: $JUDGEHOST_IMAGE"
+
 # Remove existing container if it exists
 if docker ps -a --format '{{.Names}}' | grep -q "^judgehost-0$"; then
   echo "Removing existing judgehost-0 container..."
@@ -50,6 +57,6 @@ docker run -d --privileged \
   -e DAEMON_ID=0 \
   -e JUDGEDAEMON_USERNAME=judgehost \
   -e JUDGEDAEMON_PASSWORD="$JUDGEDAEMON_PASSWORD" \
-  domjudge/judgehost:latest
+  "$JUDGEHOST_IMAGE"
 
 echo "All containers started successfully."
